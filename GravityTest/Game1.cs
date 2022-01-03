@@ -3,25 +3,27 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 
 namespace GravityTest
 {
     public class Game1 : Game
     {
-        int boulderCount = 8;
-        Texture2D ballTexture;
-        Vector2 playerPosition;
-        List<Vector2> boulderPositions;
+        Player player;
+        List<Platform> platforms;
 
         float ballSpeed;
         readonly int maxWidth;
         readonly int maxHeight;
         bool isJumping;
         float jumpSpeed = 0;
-        int verticalOffset = 0;
-        int horizontalOffset = 0;
         bool isGameOver = false;
         SpriteFont spriteFont;
+        LevelData levelData;
+        string levelJson;
+        Dictionary<string, Texture2D> textureMap = new Dictionary<string, Texture2D>();
 
 
         private readonly GraphicsDeviceManager _graphics;
@@ -39,17 +41,10 @@ namespace GravityTest
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            playerPosition = new Vector2(maxWidth / 2, maxHeight);
             ballSpeed = 500f;
             isJumping = false;
             jumpSpeed = 0;
-            boulderPositions = new List<Vector2> { };
-            Random random = new Random();
-
-            for (int i = 0; i < boulderCount; i++)
-            {
-                boulderPositions.Add(new Vector2((float)random.NextDouble() * maxWidth, (float)random.NextDouble() * maxHeight * 0.9f));
-            }
+            platforms = new List<Platform>();
             _graphics.PreferredBackBufferWidth = maxWidth;
             _graphics.PreferredBackBufferHeight = maxHeight;
             _graphics.ApplyChanges();
@@ -62,21 +57,49 @@ namespace GravityTest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            ballTexture = Content.Load<Texture2D>("ball");
             spriteFont = Content.Load<SpriteFont>("font");
+            levelJson = File.ReadAllText("../../../data/level1.json");
+            levelData = JsonSerializer.Deserialize<LevelData>(@levelJson);
+            textureMap.Add("ball", Content.Load<Texture2D>("ball"));
+
+            for (int i = 0; i < levelData.platforms.Length; i++)
+            {
+                EntityData currentPlatform = levelData.platforms[i];
+                if (!textureMap.ContainsKey(currentPlatform.texture))
+                {
+                    textureMap.Add(currentPlatform.texture, Content.Load<Texture2D>(currentPlatform.texture));
+                }
+                platforms.Add(
+                    new Platform(
+                        new Vector2(currentPlatform.centerPosition[0], currentPlatform.centerPosition[1]),
+                        new List<HitBox>(currentPlatform.hitBoxes.Select(
+                            hitBox => new HitBox(
+                                new Vector2(hitBox.centerPosition[0], hitBox.centerPosition[1]),
+                                hitBox.rotationAngle,
+                                hitBox.height,
+                                hitBox.width)
+                            )
+                        ),
+                        textureMap[currentPlatform.texture],
+                        currentPlatform.rotationAngle
+                    )
+                );
+            }
+
+            player = new Player(new Vector2(maxWidth / 2, maxHeight), new List<HitBox> { new HitBox(new Vector2(maxWidth / 2, maxHeight), 0, 64, 64) }, textureMap["ball"]);
         }
 
         float getCollisionDepth()
         {
-            for (int i = 0; i < boulderPositions.Count; i++)
+            for (int i = 0; i < platforms.Count; i++)
             {
-                Vector2 thingPosition = boulderPositions[i];
-                float sidea = Math.Abs(thingPosition.X + horizontalOffset - playerPosition.X);
-                float sideb = Math.Abs(thingPosition.Y + verticalOffset - playerPosition.Y);
-                sidea *= sidea;
-                sideb *= sideb;
-                float distance = (float)Math.Sqrt(sidea + sideb);
-                if (distance < ballTexture.Width) return ballTexture.Width - distance;
+                if (player.CenterPosition.X < platforms[i].CenterPosition.X + platforms[i].Texture.Width &&
+                player.CenterPosition.X + player.Texture.Width > platforms[i].CenterPosition.X &&
+                player.CenterPosition.Y < platforms[i].CenterPosition.Y + player.Texture.Height &&
+                player.Texture.Height + player.CenterPosition.Y > platforms[i].CenterPosition.Y)
+                {
+                    return 1;
+                }
             }
 
             return 0;
@@ -84,32 +107,40 @@ namespace GravityTest
 
         void keepBallInBoundaries()
         {
-            if (playerPosition.X > maxWidth - ballTexture.Width / 2)
+            Vector2 currentCenterPosition = player.CenterPosition;
+
+            if (player.CenterPosition.X > maxWidth - player.Texture.Width / 2)
             {
-                playerPosition.X = maxWidth - ballTexture.Width / 2;
+                currentCenterPosition.X = maxWidth - player.Texture.Width / 2;
+                player.CenterPosition = currentCenterPosition;
             }
-            else if (playerPosition.X < ballTexture.Width / 2)
+            else if (player.CenterPosition.X < player.Texture.Width / 2)
             {
-                playerPosition.X = ballTexture.Width / 2;
+                currentCenterPosition.X = player.Texture.Width / 2;
+                player.CenterPosition = currentCenterPosition;
             }
 
-            if (playerPosition.Y > maxHeight - ballTexture.Height / 2)
+            if (player.CenterPosition.Y > maxHeight - player.Texture.Height / 2)
             {
-                playerPosition.Y = maxHeight - ballTexture.Height / 2;
+                currentCenterPosition.Y = maxHeight - player.Texture.Height / 2;
+                player.CenterPosition = currentCenterPosition;
             }
-            else if (playerPosition.Y < ballTexture.Height / 2)
+            else if (player.CenterPosition.Y < player.Texture.Height / 2)
             {
-                playerPosition.Y = ballTexture.Height / 2;
+                currentCenterPosition.Y = player.Texture.Height / 2;
+                player.CenterPosition = currentCenterPosition;
             }
         }
 
         void handleXAxisCollision(float initialX)
         {
+            Vector2 currentCenterPosition = player.CenterPosition;
             if (getCollisionDepth() > 0)
             {
-                playerPosition.X = initialX;
+                currentCenterPosition.X = initialX;
+                player.CenterPosition = currentCenterPosition;
             }
-            else if (!isJumping && playerPosition.Y < maxHeight - ballTexture.Height / 2)
+            else if (!isJumping && player.CenterPosition.Y < maxHeight - player.Texture.Height / 2)
             {
                 isJumping = true;
                 jumpSpeed = 0;
@@ -118,18 +149,22 @@ namespace GravityTest
 
         void handleIsJumping(float initialY)
         {
-            playerPosition.Y += jumpSpeed;
+            Vector2 currentCenterPosition = player.CenterPosition;
+            currentCenterPosition.Y += jumpSpeed;
+            player.CenterPosition = currentCenterPosition;
             float collisionDepth = getCollisionDepth();
             if (collisionDepth > 0)
             {
                 if (jumpSpeed <= 0)
                 {
-                    playerPosition.Y = initialY;
+                    currentCenterPosition.Y = initialY;
+                    player.CenterPosition = currentCenterPosition;
                     jumpSpeed = 0;
                 }
                 else
                 {
-                    playerPosition.Y -= collisionDepth;
+                    currentCenterPosition.Y -= collisionDepth;
+                    player.CenterPosition = currentCenterPosition;
                     isJumping = false;
                 }
             }
@@ -139,12 +174,14 @@ namespace GravityTest
                 if (isTimeToScrollScreenY())
                 {
                     handleScrollScreenY();
-                    playerPosition.Y = initialY;
+                    currentCenterPosition.Y = initialY;
+                    player.CenterPosition = currentCenterPosition;
                 }
                 jumpSpeed += 1;
-                if (playerPosition.Y >= maxHeight - ballTexture.Height / 2)
+                if (player.CenterPosition.Y >= maxHeight - player.Texture.Height / 2)
                 {
-                    playerPosition.Y = maxHeight - ballTexture.Height / 2;
+                    currentCenterPosition.Y = maxHeight - player.Texture.Height / 2;
+                    player.CenterPosition = currentCenterPosition;
                     isJumping = false;
                     jumpSpeed = 0;
                 }
@@ -154,31 +191,27 @@ namespace GravityTest
         void handleScrollScreenY()
         {
             if (jumpSpeed > 0) return;
-            verticalOffset += (int)Math.Abs(jumpSpeed);
-            for (int i = 0; i < boulderPositions.Count; i++)
-            {
-                Vector2 boulderPosition = boulderPositions[i];
-                if (boulderPosition.Y + verticalOffset - ballTexture.Height / 2 > maxHeight)
-                {
-                    boulderPositions[i] = new Vector2(boulderPosition.X, -verticalOffset);
-                }
-
-            }
+            Display.VerticalOffset += (int)Math.Abs(jumpSpeed);
         }
 
         bool isTimeToScrollScreenY()
         {
-            return playerPosition.Y < maxHeight * 0.2f;
+            return player.CenterPosition.Y < maxHeight * 0.2f;
         }
 
         void handleScrollScreenX(float movementDistance)
         {
-            horizontalOffset += (int)(playerPosition.X < maxWidth * 0.2f ? movementDistance : -movementDistance);
+            Display.HorizontalOffset += (int)(player.CenterPosition.X < maxWidth * 0.2f ? movementDistance : -movementDistance);
         }
 
         bool isTimeToScrollScreenX()
         {
-            return playerPosition.X < maxWidth * 0.2f || playerPosition.X > maxWidth * 0.8f;
+            return player.CenterPosition.X < maxWidth * 0.2f || player.CenterPosition.X > maxWidth * 0.8f;
+        }
+
+        float toRadians(float value)
+        {
+            return (float)(value * (Math.PI)) / 180;
         }
 
         protected override void Update(GameTime gameTime)
@@ -191,28 +224,33 @@ namespace GravityTest
             if (isGameOver) return;
 
             float movementDistance = ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            float initialX = playerPosition.X;
-            float initialY = playerPosition.Y;
+            float initialX = player.CenterPosition.X;
+            float initialY = player.CenterPosition.Y;
+            Vector2 currentCenter = player.CenterPosition;
 
             if (keyState.IsKeyDown(Keys.Left))
             {
-                playerPosition.X -= movementDistance;
+                currentCenter.X -= movementDistance;
+                player.CenterPosition = currentCenter;
                 handleXAxisCollision(initialX);
                 if (isTimeToScrollScreenX())
                 {
                     handleScrollScreenX(movementDistance);
-                    playerPosition.X += movementDistance;
+                    currentCenter.X += movementDistance;
+                    player.CenterPosition = currentCenter;
                 }
             }
 
             if (keyState.IsKeyDown(Keys.Right))
             {
-                playerPosition.X += movementDistance;
+                currentCenter.X += movementDistance;
+                player.CenterPosition = currentCenter;
                 handleXAxisCollision(initialX);
                 if (isTimeToScrollScreenX())
                 {
                     handleScrollScreenX(movementDistance);
-                    playerPosition.X -= movementDistance;
+                    currentCenter.X -= movementDistance;
+                    player.CenterPosition = currentCenter;
                 }
             }
 
@@ -228,7 +266,7 @@ namespace GravityTest
 
             keepBallInBoundaries();
 
-            if (verticalOffset > 0 && playerPosition.Y >= maxHeight - ballTexture.Height / 2)
+            if (Display.VerticalOffset > 0 && player.CenterPosition.Y >= maxHeight - player.Texture.Height / 2)
             {
                 isGameOver = true;
             }
@@ -243,27 +281,27 @@ namespace GravityTest
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             _spriteBatch.Draw(
-                ballTexture,
-                playerPosition,
+                player.Texture,
+                player.CenterPosition,
                 null,
                 Color.White,
                 0f,
-                new Vector2(ballTexture.Width / 2, ballTexture.Height / 2),
+                new Vector2(player.Texture.Width / 2, player.Texture.Height / 2),
                 Vector2.One,
                 SpriteEffects.None,
                 0f
             );
 
-            for (int i = 0; i < boulderPositions.Count; i++)
+            for (int i = 0; i < platforms.Count; i++)
             {
-                Vector2 boulderPosition = boulderPositions[i];
+                Platform currentPlatform = platforms[i];
                 _spriteBatch.Draw(
-                    ballTexture,
-                    new Vector2(boulderPosition.X + horizontalOffset, boulderPosition.Y + verticalOffset),
+                    currentPlatform.Texture,
+                    new Vector2(currentPlatform.CenterPosition.X + Display.HorizontalOffset, currentPlatform.CenterPosition.Y + Display.VerticalOffset),
                     null,
                     Color.White,
-                    0f,
-                    new Vector2(ballTexture.Width / 2, ballTexture.Height / 2),
+                    toRadians(currentPlatform.RotationAngle),
+                    new Vector2(currentPlatform.Texture.Width / 2, currentPlatform.Texture.Height / 2),
                     Vector2.One,
                     SpriteEffects.None,
                     0f

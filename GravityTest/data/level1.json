@@ -1,0 +1,17 @@
+{
+  "platforms": [
+    {
+      "texture": "greenBlock",
+      "centerPosition": [ 400, 500 ],
+      "rotationAngle": 330,
+      "hitBoxes": [
+        {
+          "centerPosition": [ 400, 500 ],
+          "height": 25,
+          "width": 300,
+          "rotationAngle": 330
+        }
+      ]
+    }
+  ]
+}
