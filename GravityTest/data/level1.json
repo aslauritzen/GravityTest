@@ -2,14 +2,53 @@
   "platforms": [
     {
       "texture": "greenBlock",
-      "centerPosition": [ 400, 500 ],
-      "rotationAngle": 330,
+      "centerPosition": [ 500, 600 ],
+      "rotationAngle": 170,
       "hitBoxes": [
         {
-          "centerPosition": [ 400, 500 ],
-          "height": 25,
+          "centerPosition": [ 500, 600 ],
+          "height": 10,
           "width": 300,
-          "rotationAngle": 330
+          "rotationAngle": 170
+        }
+      ]
+    },
+    {
+      "texture": "greenBlock",
+      "centerPosition": [ 700, 500 ],
+      "rotationAngle": 145,
+      "hitBoxes": [
+        {
+          "centerPosition": [ 700, 700 ],
+          "height": 10,
+          "width": 300,
+          "rotationAngle": 145
+        }
+      ]
+    },
+    {
+      "texture": "greenBlock",
+      "centerPosition": [ 800, 400 ],
+      "rotationAngle": 120,
+      "hitBoxes": [
+        {
+          "centerPosition": [ 800, 400 ],
+          "height": 10,
+          "width": 300,
+          "rotationAngle": 120
+        }
+      ]
+    },
+    {
+      "texture": "greenBlock",
+      "centerPosition": [ 980, 200 ],
+      "rotationAngle": 325,
+      "hitBoxes": [
+        {
+          "centerPosition": [ 980, 200 ],
+          "height": 20,
+          "width": 300,
+          "rotationAngle": 325
         }
       ]
     }

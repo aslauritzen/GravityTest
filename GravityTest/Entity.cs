@@ -19,6 +19,7 @@ namespace GravityTest
         private int _rotationAngle;
 
 
+
         public Entity(Vector2 centerPosition, List<HitBox> hitBoxes, Texture2D texture, int rotationAngle)
         {
             _centerPosition = centerPosition;
@@ -29,6 +30,7 @@ namespace GravityTest
 
         public int GetEntityCollisionDepth(Entity entity)
         {
+
             if (CenterPosition.X < entity.CenterPosition.X + entity.Texture.Width &&
                 CenterPosition.X + Texture.Width > entity.CenterPosition.X &&
                 CenterPosition.Y < entity.CenterPosition.Y + Texture.Height &&
@@ -47,12 +49,12 @@ namespace GravityTest
                 new Vector2(CenterPosition.X + Display.HorizontalOffset, CenterPosition.Y + Display.VerticalOffset),
                 null,
                 Color.White,
-                0f,
+                MathUtils.toRadians(RotationAngle),
                 new Vector2(Texture.Width / 2, Texture.Height / 2),
                 Vector2.One,
                 SpriteEffects.None,
                 0f
-            ); ;
+            );
         }
 
         public void Move(Directions direction, float movementDistance)
@@ -65,6 +67,18 @@ namespace GravityTest
             //    handleScrollScreenX(movementDistance);
             //    playerPosition.X += movementDistance;
             //}
+        }
+
+        public static bool isOnScreen(Entity entity)
+        {
+            return (entity.CenterPosition.X - entity.Texture.Width < Display.MaxWidth + Display.HorizontalOffset &&
+            entity.CenterPosition.X - entity.Texture.Width > Display.HorizontalOffset) ||
+            (entity.CenterPosition.Y - entity.Texture.Height < Display.MaxHeight + Display.VerticalOffset &&
+            entity.CenterPosition.Y - entity.Texture.Height > Display.VerticalOffset) ||
+            (entity.CenterPosition.X + entity.Texture.Width > Display.HorizontalOffset &&
+            entity.CenterPosition.X + entity.Texture.Width < Display.MaxWidth + Display.HorizontalOffset) ||
+            (entity.CenterPosition.Y + entity.Texture.Height > Display.VerticalOffset &&
+            entity.CenterPosition.Y + entity.Texture.Height < Display.MaxHeight + Display.VerticalOffset);
         }
 
         public Vector2 CenterPosition
