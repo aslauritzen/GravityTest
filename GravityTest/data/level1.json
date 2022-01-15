@@ -34,21 +34,34 @@
         {
           "centerPosition": [ 800, 400 ],
           "height": 10,
-          "width": 300,
+          "width": 280,
           "rotationAngle": 120
         }
       ]
     },
     {
       "texture": "greenBlock",
-      "centerPosition": [ 980, 200 ],
-      "rotationAngle": 325,
+      "centerPosition": [ 1010, 290 ],
+      "rotationAngle": 0,
       "hitBoxes": [
         {
-          "centerPosition": [ 980, 200 ],
-          "height": 20,
+          "centerPosition": [ 1010, 290 ],
+          "height": 30,
+          "width": 260,
+          "rotationAngle": 0
+        }
+      ]
+    },
+    {
+      "texture": "greenBlock",
+      "centerPosition": [ 1200, 150 ],
+      "rotationAngle": 90,
+      "hitBoxes": [
+        {
+          "centerPosition": [ 1200, 150 ],
+          "height": 30,
           "width": 300,
-          "rotationAngle": 325
+          "rotationAngle": 90
         }
       ]
     }

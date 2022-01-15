@@ -78,7 +78,6 @@ namespace GravityTest
                     first.CenterPosition += offsetVector;
                     HitBoxes[0] = first;
                     if (!isSpaceDown) isJumping = false;
-                    break;
                 }
                 else
                 {
@@ -172,61 +171,61 @@ namespace GravityTest
                 SpriteEffects.None,
                 0f
             );
-            //spriteBatch.Draw(
-            //    Game1.blackBox,
-            //    new Vector2(HitBoxes[0].TopLeftCorner.X, HitBoxes[0].TopLeftCorner.Y),
-            //    null,
-            //    Color.White,
-            //    0f,
-            //    new Vector2(2, 2),
-            //    Vector2.One,
-            //    SpriteEffects.None,
-            //    0f
-            //);
-            //spriteBatch.Draw(
-            //    Game1.blackBox,
-            //    new Vector2(HitBoxes[0].TopRightCorner.X, HitBoxes[0].TopRightCorner.Y),
-            //    null,
-            //    Color.White,
-            //    0f,
-            //    new Vector2(2, 2),
-            //    Vector2.One,
-            //    SpriteEffects.None,
-            //    0f
-            //);
-            //spriteBatch.Draw(
-            //    Game1.blackBox,
-            //    new Vector2(HitBoxes[0].BottomLeftCorner.X, HitBoxes[0].BottomLeftCorner.Y),
-            //    null,
-            //    Color.White,
-            //    0f,
-            //    new Vector2(2, 2),
-            //    Vector2.One,
-            //    SpriteEffects.None,
-            //    0f
-            //);
-            //spriteBatch.Draw(
-            //    Game1.blackBox,
-            //    new Vector2(HitBoxes[0].BottomRightCorner.X, HitBoxes[0].BottomRightCorner.Y),
-            //    null,
-            //    Color.White,
-            //    0f,
-            //    new Vector2(2, 2),
-            //    Vector2.One,
-            //    SpriteEffects.None,
-            //    0f
-            //);
-            //spriteBatch.Draw(
-            //    Game1.blackBox,
-            //    new Vector2(HitBoxes[0].CenterPosition.X, HitBoxes[0].CenterPosition.Y),
-            //    null,
-            //    Color.White,
-            //    0f,
-            //    new Vector2(2, 2),
-            //    Vector2.One,
-            //    SpriteEffects.None,
-            //    0f
-            //);
+            spriteBatch.Draw(
+                Game1.blackBox,
+                new Vector2(HitBoxes[0].TopLeftCorner.X, HitBoxes[0].TopLeftCorner.Y),
+                null,
+                Color.White,
+                0f,
+                new Vector2(2, 2),
+                Vector2.One,
+                SpriteEffects.None,
+                0f
+            );
+            spriteBatch.Draw(
+                Game1.blackBox,
+                new Vector2(HitBoxes[0].TopRightCorner.X, HitBoxes[0].TopRightCorner.Y),
+                null,
+                Color.White,
+                0f,
+                new Vector2(2, 2),
+                Vector2.One,
+                SpriteEffects.None,
+                0f
+            );
+            spriteBatch.Draw(
+                Game1.blackBox,
+                new Vector2(HitBoxes[0].BottomLeftCorner.X, HitBoxes[0].BottomLeftCorner.Y),
+                null,
+                Color.White,
+                0f,
+                new Vector2(2, 2),
+                Vector2.One,
+                SpriteEffects.None,
+                0f
+            );
+            spriteBatch.Draw(
+                Game1.blackBox,
+                new Vector2(HitBoxes[0].BottomRightCorner.X, HitBoxes[0].BottomRightCorner.Y),
+                null,
+                Color.White,
+                0f,
+                new Vector2(2, 2),
+                Vector2.One,
+                SpriteEffects.None,
+                0f
+            );
+            spriteBatch.Draw(
+                Game1.blackBox,
+                new Vector2(HitBoxes[0].CenterPosition.X, HitBoxes[0].CenterPosition.Y),
+                null,
+                Color.White,
+                0f,
+                new Vector2(2, 2),
+                Vector2.One,
+                SpriteEffects.None,
+                0f
+            );
         }
     }
 }

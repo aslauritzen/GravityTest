@@ -15,7 +15,6 @@ namespace GravityTest
         List<Platform> onScreenPlatforms;
 
         float ballSpeed;
-        bool isGameOver = false;
         SpriteFont spriteFont;
         LevelData levelData;
         string levelJson;
@@ -37,8 +36,7 @@ namespace GravityTest
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            ballSpeed = 500f;
+            ballSpeed = 300f;
             platforms = new List<Platform>();
             onScreenPlatforms = new List<Platform>();
             _graphics.PreferredBackBufferWidth = Display.MaxWidth;
@@ -53,7 +51,6 @@ namespace GravityTest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             blackBox = Content.Load<Texture2D>("blackBox");
 
-            // TODO: use this.Content to load your game content here
             spriteFont = Content.Load<SpriteFont>("font");
             levelJson = File.ReadAllText("../../../data/level1.json");
             levelData = JsonSerializer.Deserialize<LevelData>(@levelJson);
@@ -110,15 +107,8 @@ namespace GravityTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyState.IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (isGameOver) return;
-
             float movementDistance = ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             player.Move(movementDistance, platforms);
-
-            if (Display.VerticalOffset > 0 && player.CenterPosition.Y >= Display.MaxHeight - player.Texture.Height / 2)
-            {
-                isGameOver = true;
-            }
 
             base.Update(gameTime);
         }
@@ -136,9 +126,6 @@ namespace GravityTest
                 Platform currentPlatform = onScreenPlatforms[i];
                 currentPlatform.Draw(_spriteBatch);
             }
-
-            if (isGameOver)
-                _spriteBatch.DrawString(spriteFont, "Game Over", new Vector2(Display.MaxWidth / 2, Display.MaxHeight / 2), Color.Black);
 
             _spriteBatch.End();
 
