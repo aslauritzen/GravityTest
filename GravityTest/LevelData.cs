@@ -2,6 +2,10 @@
 {
     public class LevelData
     {
+        public static int Width { get; private set; }
+        public static int Height { get; private set; }
+        public int width { set { Width = value; } }
+        public int height { set { Height = value; } }
         public EntityData[] platforms { get; set; }
     }
 

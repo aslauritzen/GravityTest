@@ -13,6 +13,12 @@ namespace GravityTest
         bool isLeftDown = false;
         bool isRightDown = false;
 
+        public bool IsJumping
+        {
+            get { return isJumping; }
+        }
+
+
         public Player(Vector2 centerPosition, List<HitBox> hitBoxes, Texture2D texture) : base(centerPosition, hitBoxes, texture, rotationAngle: 0) { }
 
         public void Move(float movementDistance, List<Platform> platforms)
@@ -141,9 +147,9 @@ namespace GravityTest
 
             if (isJumping)
             {
-                if (Display.isTimeToScrollScreenY(this))
+                if (Display.isTimeToScrollScreenY(this, jumpSpeed))
                 {
-                    Display.handleScrollScreenY(jumpSpeed);
+                    Display.handleScrollScreenY(this, jumpSpeed);
                     currentCenterPosition.Y = initialY;
                     CenterPosition = currentCenterPosition;
                 }
@@ -160,6 +166,17 @@ namespace GravityTest
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            //spriteBatch.Draw(
+            //    Texture,
+            //    CenterPosition,
+            //    new Rectangle(18, 18, 10, 15),
+            //    Color.White,
+            //    0f,
+            //    new Vector2(5, 7),
+            //    Vector2.One,
+            //    SpriteEffects.None,
+            //    0f
+            //);
             spriteBatch.Draw(
                 Texture,
                 CenterPosition,

@@ -15,7 +15,6 @@ namespace GravityTest
         List<Platform> onScreenPlatforms;
 
         float ballSpeed;
-        SpriteFont spriteFont;
         LevelData levelData;
         string levelJson;
         Dictionary<string, Texture2D> textureMap = new Dictionary<string, Texture2D>();
@@ -24,6 +23,7 @@ namespace GravityTest
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Texture2D _spriteSheet;
 
         public Game1()
         {
@@ -51,10 +51,12 @@ namespace GravityTest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             blackBox = Content.Load<Texture2D>("blackBox");
 
-            spriteFont = Content.Load<SpriteFont>("font");
             levelJson = File.ReadAllText("../../../data/level1.json");
             levelData = JsonSerializer.Deserialize<LevelData>(@levelJson);
             textureMap.Add("ball", Content.Load<Texture2D>("ball"));
+            _spriteSheet = Content.Load<Texture2D>("newDude");
+            Display.VerticalOffset = LevelData.Height - Display.MaxHeight;
+            Display.HorizontalOffset = 500;
 
             for (int i = 0; i < levelData.platforms.Length; i++)
             {
@@ -84,24 +86,24 @@ namespace GravityTest
                 }
             }
 
-            player = new Player(new Vector2(Display.MaxWidth / 2, Display.MaxHeight), new List<HitBox> { new HitBox(new Vector2(Display.MaxWidth / 2, Display.MaxHeight), 0, 64, 64) }, textureMap["ball"]);
+            player = new Player(new Vector2(Display.MaxWidth / 2, Display.MaxHeight), new List<HitBox> { new HitBox(new Vector2(Display.MaxWidth / 2, Display.MaxHeight), 0, 64, 64) }, _spriteSheet);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            onScreenPlatforms.Clear();
+            //onScreenPlatforms.Clear();
             for (int i = 0; i < platforms.Count; i++)
             {
-                if (Entity.isOnScreen(platforms[i]))
-                {
-                    List<HitBox> hitBoxes = platforms[i].HitBoxes;
-                    onScreenPlatforms.Add(platforms[i]);
+                //if (Entity.isOnScreen(platforms[i]))
+                //{
+                List<HitBox> hitBoxes = platforms[i].HitBoxes;
+                //onScreenPlatforms.Add(platforms[i]);
 
-                    for (int j = 0; j < hitBoxes.Count; j++)
-                    {
-                        hitBoxes[j].Reposition(onScreenPlatforms[i].CenterPosition);
-                    }
+                for (int j = 0; j < hitBoxes.Count; j++)
+                {
+                    hitBoxes[j].Reposition(platforms[i].CenterPosition);
                 }
+                //}
             }
             KeyboardState keyState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyState.IsKeyDown(Keys.Escape))
@@ -121,9 +123,9 @@ namespace GravityTest
             _spriteBatch.Begin();
             player.Draw(_spriteBatch);
 
-            for (int i = 0; i < onScreenPlatforms.Count; i++)
+            for (int i = 0; i < platforms.Count; i++)
             {
-                Platform currentPlatform = onScreenPlatforms[i];
+                Platform currentPlatform = platforms[i];
                 currentPlatform.Draw(_spriteBatch);
             }
 

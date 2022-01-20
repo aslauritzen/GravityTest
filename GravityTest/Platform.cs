@@ -12,7 +12,7 @@ namespace GravityTest
         {
             spriteBatch.Draw(
                 Texture,
-                new Vector2(CenterPosition.X + Display.HorizontalOffset, CenterPosition.Y + Display.VerticalOffset),
+                new Vector2(CenterPosition.X - Display.HorizontalOffset, CenterPosition.Y - Display.VerticalOffset),
                 null,
                 Color.White,
                 MathUtils.toRadians(RotationAngle),

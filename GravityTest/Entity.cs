@@ -46,7 +46,7 @@ namespace GravityTest
         {
             spriteBatch.Draw(
                 Texture,
-                new Vector2(CenterPosition.X + Display.HorizontalOffset, CenterPosition.Y + Display.VerticalOffset),
+                new Vector2(CenterPosition.X - Display.HorizontalOffset, CenterPosition.Y - Display.VerticalOffset),
                 null,
                 Color.White,
                 MathUtils.toRadians(RotationAngle),
@@ -71,14 +71,23 @@ namespace GravityTest
 
         public static bool isOnScreen(Entity entity)
         {
-            return (entity.CenterPosition.X - entity.Texture.Width < Display.MaxWidth + Display.HorizontalOffset &&
-            entity.CenterPosition.X - entity.Texture.Width > Display.HorizontalOffset) ||
-            (entity.CenterPosition.Y - entity.Texture.Height < Display.MaxHeight + Display.VerticalOffset &&
-            entity.CenterPosition.Y - entity.Texture.Height > Display.VerticalOffset) ||
-            (entity.CenterPosition.X + entity.Texture.Width > Display.HorizontalOffset &&
-            entity.CenterPosition.X + entity.Texture.Width < Display.MaxWidth + Display.HorizontalOffset) ||
-            (entity.CenterPosition.Y + entity.Texture.Height > Display.VerticalOffset &&
-            entity.CenterPosition.Y + entity.Texture.Height < Display.MaxHeight + Display.VerticalOffset);
+            int entityWidth = entity.Texture.Width;
+            int entityHeight = entity.Texture.Height;
+            float entityCenterX = entity.CenterPosition.X;
+            float entityCenterY = entity.CenterPosition.Y;
+
+            return (
+                entityCenterX - entityWidth < Display.MaxWidth + Display.HorizontalOffset &&
+                entityCenterX - entityWidth > Display.HorizontalOffset) ||
+                (
+                entityCenterY - entityHeight < Display.MaxHeight + Display.VerticalOffset &&
+                entityCenterY - entityHeight > Display.VerticalOffset) ||
+                (
+                entityCenterX + entityWidth > Display.HorizontalOffset &&
+                entityCenterX + entityWidth < Display.MaxWidth + Display.HorizontalOffset) ||
+                (
+                entityCenterY + entityHeight > Display.VerticalOffset &&
+                entityCenterY + entityHeight < Display.MaxHeight + Display.VerticalOffset);
         }
 
         public Vector2 CenterPosition

@@ -1,12 +1,14 @@
 {
+  "width": 2500,
+  "height":  2400,
   "platforms": [
     {
       "texture": "greenBlock",
-      "centerPosition": [ 500, 600 ],
+      "centerPosition": [ 500, 2300 ],
       "rotationAngle": 170,
       "hitBoxes": [
         {
-          "centerPosition": [ 500, 600 ],
+          "centerPosition": [ 500, 2300 ],
           "height": 10,
           "width": 300,
           "rotationAngle": 170
@@ -15,11 +17,11 @@
     },
     {
       "texture": "greenBlock",
-      "centerPosition": [ 700, 500 ],
+      "centerPosition": [ 700, 2200 ],
       "rotationAngle": 145,
       "hitBoxes": [
         {
-          "centerPosition": [ 700, 700 ],
+          "centerPosition": [ 700, 2200 ],
           "height": 10,
           "width": 300,
           "rotationAngle": 145
@@ -28,24 +30,24 @@
     },
     {
       "texture": "greenBlock",
-      "centerPosition": [ 800, 400 ],
-      "rotationAngle": 120,
+      "centerPosition": [ 900, 2100 ],
+      "rotationAngle": 130,
       "hitBoxes": [
         {
-          "centerPosition": [ 800, 400 ],
+          "centerPosition": [ 900, 2100 ],
           "height": 10,
           "width": 280,
-          "rotationAngle": 120
+          "rotationAngle": 130
         }
       ]
     },
     {
       "texture": "greenBlock",
-      "centerPosition": [ 1010, 290 ],
+      "centerPosition": [ 1100, 1990 ],
       "rotationAngle": 0,
       "hitBoxes": [
         {
-          "centerPosition": [ 1010, 290 ],
+          "centerPosition": [ 1100, 1990 ],
           "height": 30,
           "width": 260,
           "rotationAngle": 0
@@ -54,11 +56,11 @@
     },
     {
       "texture": "greenBlock",
-      "centerPosition": [ 1200, 150 ],
+      "centerPosition": [ 1150, 1850 ],
       "rotationAngle": 90,
       "hitBoxes": [
         {
-          "centerPosition": [ 1200, 150 ],
+          "centerPosition": [ 1150, 1850 ],
           "height": 30,
           "width": 300,
           "rotationAngle": 90

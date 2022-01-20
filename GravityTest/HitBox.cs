@@ -29,11 +29,11 @@ namespace GravityTest
 
         public void Reposition(Vector2 centerPosition)
         {
-            _centerPosition = new Vector2(centerPosition.X + Display.HorizontalOffset, centerPosition.Y + Display.VerticalOffset);
-            _topLeftCorner = new Vector2((centerPosition.X - Width / 2) + Display.HorizontalOffset, (centerPosition.Y + Height / 2) + Display.VerticalOffset);
-            _topRightCorner = new Vector2((centerPosition.X + Width / 2) + Display.HorizontalOffset, (centerPosition.Y + Height / 2) + Display.VerticalOffset);
-            _bottomLeftCorner = new Vector2((centerPosition.X - Width / 2) + Display.HorizontalOffset, (centerPosition.Y - Height / 2) + Display.VerticalOffset);
-            _bottomRightCorner = new Vector2((centerPosition.X + Width / 2) + Display.HorizontalOffset, (centerPosition.Y - Height / 2) + Display.VerticalOffset);
+            _centerPosition = new Vector2(centerPosition.X - Display.HorizontalOffset, centerPosition.Y - Display.VerticalOffset);
+            _topLeftCorner = new Vector2((centerPosition.X - Width / 2) - Display.HorizontalOffset, (centerPosition.Y + Height / 2) - Display.VerticalOffset);
+            _topRightCorner = new Vector2((centerPosition.X + Width / 2) - Display.HorizontalOffset, (centerPosition.Y + Height / 2) - Display.VerticalOffset);
+            _bottomLeftCorner = new Vector2((centerPosition.X - Width / 2) - Display.HorizontalOffset, (centerPosition.Y - Height / 2) - Display.VerticalOffset);
+            _bottomRightCorner = new Vector2((centerPosition.X + Width / 2) - Display.HorizontalOffset, (centerPosition.Y - Height / 2) - Display.VerticalOffset);
             if (_rotationAngle != 0) RotateHitbox();
         }
 

@@ -10,28 +10,35 @@ namespace GravityTest
         static int _maxWidth = 0;
         static int _maxHeight = 0;
 
-        public static void handleScrollScreenY(int jumpSpeed)
+        public static void handleScrollScreenY(Player player, int jumpSpeed)
         {
-            if (jumpSpeed > 0) return;
-            Display.VerticalOffset += (int)Math.Abs(jumpSpeed);
+            VerticalOffset += player.CenterPosition.Y < MaxHeight * 0.2f ? -Math.Abs(jumpSpeed) : Math.Abs(jumpSpeed);
         }
 
-        public static bool isTimeToScrollScreenY(Player player)
+        public static bool isTimeToScrollScreenY(Player player, int jumpSpeed)
         {
-            if (Display.VerticalOffset <= 0) return false;
-            return player.CenterPosition.Y < Display.MaxHeight * 0.2f;
+            if (!player.IsJumping || VerticalOffset <= 0 || player.CenterPosition.Y + VerticalOffset >= LevelData.Height) return false;
+
+            return (player.CenterPosition.Y < MaxHeight * 0.2f && jumpSpeed < 0 && VerticalOffset > 0) ||
+                (player.CenterPosition.Y > MaxHeight * 0.8f && jumpSpeed > 0 && MaxHeight + VerticalOffset < LevelData.Height);
         }
 
         public static void handleScrollScreenX(Player player, float movementDistance)
         {
-            Display.HorizontalOffset += (int)(player.CenterPosition.X < Display.MaxWidth * 0.2f ? movementDistance : -movementDistance);
+            HorizontalOffset += (int)(player.CenterPosition.X < MaxWidth * 0.2f ? -movementDistance : movementDistance);
         }
 
         public static bool isTimeToScrollScreenX(Player player)
         {
             KeyboardState keyState = Keyboard.GetState();
-            if (Display.HorizontalOffset >= 0 && keyState.IsKeyDown(Keys.Left)) return false;
-            return (player.CenterPosition.X < Display.MaxWidth * 0.2f && keyState.IsKeyDown(Keys.Left)) || (player.CenterPosition.X > Display.MaxWidth * 0.8f && keyState.IsKeyDown(Keys.Right));
+            if ((HorizontalOffset <= 0 && keyState.IsKeyDown(Keys.Left)) ||
+                (player.CenterPosition.X + HorizontalOffset >= LevelData.Width && keyState.IsKeyDown(Keys.Right)))
+            {
+                return false;
+            }
+
+            return (player.CenterPosition.X < MaxWidth * 0.2f && keyState.IsKeyDown(Keys.Left)) ||
+                (player.CenterPosition.X > MaxWidth * 0.8f && keyState.IsKeyDown(Keys.Right));
         }
 
         public static int HorizontalOffset { get { return _horizontalOffset; } set { _horizontalOffset = value; } }
